@@ -2,6 +2,8 @@ package com.rainist.grammar
 
 import org.scalatest.{Matchers, WordSpecLike}
 
+import scala.collection.mutable
+
 class BasicGrammarSpec extends WordSpecLike with Matchers {
   "Function" should {
     def adder(m: Int, n: Int) = m + n
@@ -129,6 +131,50 @@ class BasicGrammarSpec extends WordSpecLike with Matchers {
         val c = new Circle(2)
         c.area should equal(12)
       }
+    }
+  }
+
+  "Trait" should {
+    "mixin" in {
+      // abstract class 도 가능하다.
+      trait Car {
+        val brand: String
+      }
+
+      trait Shiny {
+        val shineRefraction: Int
+      }
+
+      class BMW extends Car with Shiny {
+        val brand = "BMW"
+        val shineRefraction = 12
+      }
+
+      val bmw = new BMW
+      bmw.brand should equal("BMW")
+      bmw.shineRefraction should equal(12)
+    }
+
+    "type" in {
+      trait Cache[K, V] {
+        protected val cache: mutable.HashMap[K, V] = mutable.HashMap()
+        def get(key: K): Option[V]
+        def put(key: K, value: V)
+        def delete(key: K)
+      }
+
+      class StrCache extends Cache[String, String] {
+        override def get(key: String): Option[String] = this.cache.get(key)
+        override def put(key: String, value: String): Unit = this.cache.+=(key -> value)
+        override def delete(key: String): Unit = this.cache.-=(key)
+      }
+
+      val cache = new StrCache
+      cache.get("KEY").getOrElse("") should equal("")
+      cache.put("KEY", "VALUE")
+      cache.get("KEY").getOrElse("") should equal("VALUE")
+      cache.delete("KEY")
+      cache.get("KEY").getOrElse("") should equal("")
     }
   }
 }
