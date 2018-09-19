@@ -50,5 +50,19 @@ class BasicGrammarSpec extends WordSpecLike with Matchers {
         // 이 역시 adderCurried(1, 3) 으론 사용할 수 없다.
       }
     }
+
+    "[가변인자]" when {
+      "동일한 타입의 인자의 반복을 처리할 수 있다." in {
+        def capitalizeAll(args: String*) = {
+          args.map { arg =>
+            arg.capitalize
+          }
+        }
+
+        val capitalized = capitalizeAll("rarity", "applejack")
+        capitalized.head should equal("Rarity")
+        capitalized.last should equal("Applejack")
+      }
+    }
   }
 }
