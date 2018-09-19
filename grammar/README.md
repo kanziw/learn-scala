@@ -29,3 +29,11 @@ g8 https://github.com/Rainist/scala.g8 --name=grammar
   * Test Class 에 테스트 할 Class 선택
   * Run
 
+## Scalafmt 툴 적용
+
+* IntelliJ - Preferences - Plugins - scalafmt 검색 후 설치
+  * Search in repositories
+* IntelliJ 재시작
+* IntelliJ - Preferences - Tools - scalafmt
+  * Format on file save 체크
+
