@@ -65,4 +65,43 @@ class BasicGrammarSpec extends WordSpecLike with Matchers {
       }
     }
   }
+
+  "Class" should {
+    "work" when {
+      "/w Empty Constructor" in {
+        class Calculator {
+          val brand: String = "HP"
+          def add(m: Int, n: Int): Int = m + n
+        }
+
+        val calc = new Calculator
+        calc.add(1, 2) should equal(3)
+        calc.brand should equal("HP")
+      }
+
+      "/w Non-empty Constructor" in {
+        class CalculatorBrand(brand: String) {
+          val color: String = if (brand == "TI") {
+            "blue"
+          } else if (brand == "HP") {
+            "black"
+          } else {
+            "white"
+          }
+
+          def add(m: Int, n: Int): Int = m + n
+        }
+
+        val calcTI = new CalculatorBrand("TI")
+        calcTI.color should equal("blue")
+
+        val calcHP = new CalculatorBrand("HP")
+        calcHP.color should equal("black")
+
+        val calc = new CalculatorBrand("")
+        calc.color should equal("white")
+        calc.add(2, 5) should equal(7)
+      }
+    }
+  }
 }
