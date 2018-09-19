@@ -4,7 +4,7 @@ import org.scalatest.{Matchers, WordSpecLike}
 
 import scala.collection.mutable
 
-class BasicGrammarSpec extends WordSpecLike with Matchers {
+class BasicGrammar01Spec extends WordSpecLike with Matchers {
   "Function" should {
     def adder(m: Int, n: Int) = m + n
 
