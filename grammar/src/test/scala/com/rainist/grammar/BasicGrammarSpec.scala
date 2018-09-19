@@ -68,12 +68,12 @@ class BasicGrammarSpec extends WordSpecLike with Matchers {
 
   "Class" should {
     "work" when {
-      "/w Empty Constructor" in {
-        class Calculator {
-          val brand: String = "HP"
-          def add(m: Int, n: Int): Int = m + n
-        }
+      class Calculator {
+        val brand: String = "HP"
+        def add(m: Int, n: Int): Int = m + n
+      }
 
+      "/w Empty Constructor" in {
         val calc = new Calculator
         calc.add(1, 2) should equal(3)
         calc.brand should equal("HP")
@@ -101,6 +101,33 @@ class BasicGrammarSpec extends WordSpecLike with Matchers {
         val calc = new CalculatorBrand("")
         calc.color should equal("white")
         calc.add(2, 5) should equal(7)
+      }
+
+      "[Extends]" in {
+        class ScientificCalculator extends Calculator {
+          def log(m: Double, base: Double): Double = math.log(m) / math.log(base)
+
+          override def add(m: Int, n: Int): Int = {
+            super.add(m, n + 1)
+          }
+        }
+
+        val sCalc = new ScientificCalculator
+        sCalc.log(100, 10) should equal(2)
+        sCalc.add(2, 5) should equal(8)
+      }
+
+      "[Abstract]" in {
+        abstract class Shape {
+          def area: Int
+        }
+
+        class Circle(r: Int) extends Shape {
+          override def area: Int = r * r * 3
+        }
+
+        val c = new Circle(2)
+        c.area should equal(12)
       }
     }
   }
