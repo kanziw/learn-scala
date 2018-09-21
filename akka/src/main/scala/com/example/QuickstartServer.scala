@@ -21,6 +21,10 @@ object QuickstartServer extends App with UserRoutes {
     complete("ROUTE")
   } ~ pathPrefix("users") {
     userRoutes
+  } ~ pathPrefix("v2") {
+    pathPrefix("users") {
+      userRoutes
+    }
   }
 
   val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "localhost", 8080)
