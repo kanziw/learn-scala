@@ -2,6 +2,7 @@ package com.example
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 
@@ -16,7 +17,11 @@ object QuickstartServer extends App with UserRoutes {
 
   val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
 
-  lazy val routes: Route = userRoutes
+  lazy val routes: Route = pathEndOrSingleSlash {
+    complete("ROUTE")
+  } ~ pathPrefix("users") {
+    userRoutes
+  }
 
   val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "localhost", 8080)
 

@@ -24,7 +24,7 @@ trait UserRoutes extends JsonSupport {
 
   implicit lazy val timeout: Timeout = Timeout(5.seconds)
 
-  lazy val userRoutes: Route = pathPrefix("users") {
+  lazy val userRoutes: Route = redirectToNoTrailingSlashIfPresent(StatusCodes.Found) {
     concat(
       pathEnd {
         concat(
