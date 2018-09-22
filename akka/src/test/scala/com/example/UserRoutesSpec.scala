@@ -5,6 +5,7 @@ import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
+import com.example.routes.IndexRoutes
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -12,12 +13,12 @@ class UserRoutesSpec extends WordSpec
   with Matchers
   with ScalaFutures
   with ScalatestRouteTest
-  with UserRoutes {
+  with IndexRoutes {
 
   override val userRegistryActor: ActorRef =
     system.actorOf(UserRegistryActor.props, "userRegistry")
 
-  lazy val routes: Route = userRoutes
+  lazy val routes: Route = indexRoutes
 
   "UserRoutes" should {
     "return no users if no present (GET /users)" in {

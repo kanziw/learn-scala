@@ -2,30 +2,22 @@ package com.example
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import com.example.routes.IndexRoutes
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
-object QuickstartServer extends App with UserRoutes {
+object QuickstartServer extends App with IndexRoutes {
   implicit val system: ActorSystem = ActorSystem("helloAkkaHttpServer")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContext = system.dispatcher
 
   val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
 
-  lazy val routes: Route = pathEndOrSingleSlash {
-    complete("ROUTE")
-  } ~ pathPrefix("users") {
-    userRoutes
-  } ~ pathPrefix("v2") {
-    pathPrefix("users") {
-      userRoutes
-    }
-  }
+  lazy val routes: Route = indexRoutes
 
   val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "localhost", 8080)
 
