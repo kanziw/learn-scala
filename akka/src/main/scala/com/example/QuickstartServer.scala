@@ -4,37 +4,28 @@ import akka.actor.{ ActorRef, ActorSystem }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import com.example.data.persistence.{ MySql, TestDbAccessingRepository, mysql }
 import com.example.routes.IndexRoutes
 import com.typesafe.config.ConfigFactory
-import io.getquill.{ MysqlAsyncContext, SnakeCase }
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
-object QuickstartServer extends App with IndexRoutes {
+object QuickstartServer
+  extends App
+  with IndexRoutes
+  with TestDbAccessingRepository {
+
   implicit val system: ActorSystem = ActorSystem("helloAkkaHttpServer")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit val executionContext: ExecutionContext = system.dispatcher
+  implicit val ec: ExecutionContext = system.dispatcher
 
   // Configuration
   val appConfiguration = ConfigFactory.load().getConfig("akka")
 
   // DB
-  println("", appConfiguration.getConfig("mysql"))
-  lazy val mysql: MysqlAsyncContext[SnakeCase] = new MysqlAsyncContext(SnakeCase, appConfiguration.getConfig("mysql"))
-
-  import mysql._
-
-  case class User(name: String, email: String, password: String)
-
-  mysql.run {
-    quote {
-      query[User].filter(u => u.name != "anonymous")
-    }
-  }.onComplete { r =>
-    println("", r)
-  }
+  override protected val testDb: MySql = mysql.create(appConfiguration.getConfig("mysql"))
 
   // Actor
   val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
