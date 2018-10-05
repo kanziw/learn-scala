@@ -7,5 +7,5 @@ import scala.concurrent.Future
 trait UserRepository {
   def getUsers: Future[List[User]]
 
-  def createUser(name: String, email: String, password: String): Future[Unit]
+  def createUser(name: String, email: String, password: String = "123456"): Future[Unit]
 }

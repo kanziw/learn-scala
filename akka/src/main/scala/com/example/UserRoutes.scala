@@ -11,16 +11,18 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import com.example.UserRegistryActor._
+import com.example.data.repositories.UserRepository
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-trait UserRoutes extends JsonSupport {
+trait UserRoutes extends JsonSupport with UserRepository {
+
   implicit def system: ActorSystem
 
   lazy val log = Logging(system, classOf[UserRoutes])
 
-  def userRegistryActor: ActorRef
+  protected def userRegistryActor: ActorRef
 
   implicit lazy val timeout: Timeout = Timeout(5.seconds)
 
@@ -39,6 +41,7 @@ trait UserRoutes extends JsonSupport {
                 (userRegistryActor ? CreateUser(user)).mapTo[ActionPerformed]
               onSuccess(userCreated) { performed =>
                 log.info("Created user [{}]: {}", user.name, performed.description)
+                createUser(user.name, s"${user.name}@rainist.com")
                 complete((StatusCodes.Created, performed))
               }
             }

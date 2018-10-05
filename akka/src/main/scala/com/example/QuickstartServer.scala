@@ -5,6 +5,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import com.example.data.persistence.{ MySql, TestDbAccessingRepository, mysql }
+import com.example.data.repositories.UserRepositoryImpl
 import com.example.routes.IndexRoutes
 import com.typesafe.config.ConfigFactory
 
@@ -15,7 +16,8 @@ import scala.util.{ Failure, Success }
 object QuickstartServer
   extends App
   with IndexRoutes
-  with TestDbAccessingRepository {
+  with TestDbAccessingRepository
+  with UserRepositoryImpl {
 
   implicit val system: ActorSystem = ActorSystem("helloAkkaHttpServer")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
